@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>사주를 묻다 — 명문각 明問閣</title>
+<meta name="description" content="절기 기준 만세력, 지장간 세 층까지. 무료 맛보기 후 간단·심층·정밀 간명.">
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.3/lunar.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --ink:#0F0D0A; --panel:#161310; --panel2:#1C1813; --gold:#C9A961; --gold-hi:#E4C77F;
+  --tx:#EFE8D9; --dim:#9C8F79; --line:rgba(201,169,97,.16); --line2:rgba(201,169,97,.3);
+  --serif:'Noto Serif KR',serif; --sans:'Pretendard',system-ui,sans-serif;
+  --el목:#6CA87C; --el화:#D9605A; --el토:#CFA24E; --el금:#A8A8B2; --el수:#6E95B5;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--tx);font-family:var(--sans);
+  background-image:radial-gradient(ellipse 90% 45% at 50% -10%,rgba(201,169,97,.06),transparent)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px 90px}
+
+/* ── 헤더 ── */
+header{position:relative;text-align:center;padding:44px 0 8px}
+.home{position:absolute;left:0;top:20px;font-size:.78rem;color:var(--dim);letter-spacing:.05em;
+  border:1px solid var(--line);padding:7px 14px;border-radius:99px;cursor:pointer}
+.home:hover{color:var(--gold);border-color:var(--line2)}
+#copyLink{position:absolute;right:0;top:20px;background:none;border:1px solid var(--line);color:var(--dim);
+  padding:7px 14px;border-radius:99px;cursor:pointer;font-family:inherit;font-size:.78rem}
+#copyLink:hover{color:var(--gold);border-color:var(--line2)}
+.gate{display:inline-block;position:relative;padding:20px 34px 16px;border:1px solid var(--line);cursor:default;user-select:none}
+.gate::before{content:'';position:absolute;left:-10px;right:-10px;top:-1px;height:4px;background:var(--gold)}
+.gate h1{font-family:var(--serif);font-weight:600;font-size:1.7rem;letter-spacing:.34em;text-indent:.34em}
+.gate .sub{font-family:var(--serif);font-weight:300;font-size:.72rem;letter-spacing:.5em;text-indent:.5em;color:var(--gold);margin-top:8px}
+.svc{margin:26px 0 6px;font-family:var(--serif);font-weight:300;font-size:1.5rem;letter-spacing:.12em}
+.svc b{font-weight:600;color:var(--gold-hi)}
+.lead{color:var(--dim);font-size:.86rem;line-height:1.9;margin-bottom:34px}
+
+/* ── 카드 공통 ── */
+.card{background:var(--panel);border:1px solid var(--line);padding:28px 26px;margin-bottom:22px}
+.card h2{font-family:var(--serif);font-weight:400;font-size:1.02rem;letter-spacing:.12em;color:var(--gold);
+  margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+label{display:block;font-size:.8rem;color:var(--dim);margin:18px 0 8px;letter-spacing:.04em}
+label:first-of-type{margin-top:0}
+input[type=text],input[type=time],input[type=email],input[type=password],textarea,select{
+  width:100%;background:var(--ink);border:1px solid var(--line);color:var(--tx);
+  padding:13px 14px;font-size:.95rem;font-family:inherit;border-radius:6px;outline:none}
+input:focus,textarea:focus{border-color:var(--line2)}
+input:disabled{opacity:.4}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:70px;background:var(--ink);border:1px solid var(--line);color:var(--dim);
+  padding:11px 8px;font-size:.85rem;font-family:inherit;border-radius:6px;cursor:pointer}
+.seg button.on{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,169,97,.07)}
+.chk{display:flex;align-items:center;gap:9px;font-size:.83rem;color:var(--dim);margin-top:14px;cursor:pointer}
+.chk input{accent-color:var(--gold)}
+.note{font-size:.74rem;color:var(--dim);opacity:.8;margin-top:8px;line-height:1.7}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#focusTags{display:flex;gap:8px;flex-wrap:wrap}
+#focusTags button{background:var(--ink);border:1px solid var(--line);color:var(--dim);padding:8px 15px;
+  border-radius:99px;font-size:.8rem;font-family:inherit;cursor:pointer}
+#focusTags button.on{border-color:var(--gold);color:var(--gold-hi)}
+.btn{width:100%;padding:16px;border:none;border-radius:6px;font-size:1rem;font-family:var(--sans);
+  font-weight:600;letter-spacing:.05em;cursor:pointer;margin-top:22px}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn.gold:hover{background:var(--gold-hi)}
+.btn.line{background:none;border:1px solid var(--line2);color:var(--gold)}
+.btn.line:hover{border-color:var(--gold)}
+.btn:disabled{opacity:.35;cursor:default}
+
+/* ── 명식 보드 ── */
+#board{display:none}
+.who{font-size:.84rem;color:var(--dim);margin-bottom:20px;line-height:1.8}
+.who b{color:var(--tx);font-weight:600;font-size:.95rem}
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pillars.no-time{grid-template-columns:repeat(3,1fr)}
+.pl{background:var(--ink);border:1px solid var(--line);padding:14px 6px;text-align:center}
+.pl .lab{font-size:.66rem;letter-spacing:.2em;color:var(--gold);margin-bottom:10px}
+.pl .ss{font-size:.68rem;color:var(--dim);margin:5px 0}
+.pl .han{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25}
+.pl .ko{font-size:.7rem;color:var(--dim)}
+.el-목{color:var(--el목)}.el-화{color:var(--el화)}.el-토{color:var(--el토)}.el-금{color:var(--el금)}.el-수{color:var(--el수)}
+
+/* 지장간 3층 */
+.hidbox{margin-top:26px}
+.hidbox h3, .elbox h3, .dyBox h3{font-size:.78rem;letter-spacing:.16em;color:var(--gold);margin-bottom:6px}
+.hidbox .cap, .elbox .cap{font-size:.72rem;color:var(--dim);margin-bottom:14px;line-height:1.7}
+.hidgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hidgrid.no-time{grid-template-columns:repeat(3,1fr)}
+.hcol{background:var(--ink);border:1px solid var(--line);padding:10px 8px}
+.hcol .ji{text-align:center;font-family:var(--serif);font-size:1.05rem;margin-bottom:9px;padding-bottom:7px;border-bottom:1px dashed var(--line)}
+.hrow{display:flex;justify-content:space-between;align-items:baseline;padding:4px 2px;font-size:.78rem}
+.hrow .tier-l{color:var(--dim);font-size:.66rem;letter-spacing:.06em}
+.hrow .hg{font-family:var(--serif);font-size:.95rem}
+.hrow .hd{font-size:.64rem;color:var(--dim)}
+.hrow.jeonggi{background:rgba(201,169,97,.06);border-radius:4px}
+
+/* 오행 세력 */
+.elbox{margin-top:26px}
+.elbar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.elbar .en{width:34px;font-family:var(--serif);font-size:.92rem;text-align:center}
+.elbar .track{flex:1;height:12px;background:var(--ink);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.elbar .fill{height:100%;border-radius:99px;transition:width .8s ease}
+.elbar .pct{width:44px;font-size:.74rem;color:var(--dim);text-align:right;font-variant-numeric:tabular-nums}
+
+/* 대운 */
+.dyBox{margin-top:26px}
+.dyScroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-top:12px}
+.dy{min-width:64px;background:var(--ink);border:1px solid var(--line);padding:10px 4px;text-align:center;flex-shrink:0}
+.dy.now{border-color:var(--gold);background:rgba(201,169,97,.07)}
+.dy .age{font-size:.64rem;color:var(--gold)}
+.dy .gz{font-family:var(--serif);font-size:1.05rem;margin:5px 0 3px}
+.dy .yr{font-size:.62rem;color:var(--dim)}
+
+/* 무료 첫 물음 */
+#teaserBox{margin-top:26px;border-top:1px solid var(--line);padding-top:24px;display:none}
+#teaserBox h3{font-family:var(--serif);font-weight:400;font-size:.95rem;letter-spacing:.1em;color:var(--gold-hi);margin-bottom:14px}
+#teaserTxt{font-family:var(--serif);font-weight:300;font-size:.95rem;line-height:2.15;color:var(--tx);white-space:pre-wrap}
+#teaserTxt .blink{display:inline-block;width:2px;height:1em;background:var(--gold);animation:bl 1s infinite;vertical-align:-2px}
+@keyframes bl{50%{opacity:0}}
+#teaserAfter{display:none;margin-top:20px;padding:16px;border:1px dashed var(--line2);font-size:.83rem;color:var(--dim);line-height:1.9;text-align:center}
+#teaserAfter b{color:var(--gold-hi)}
+
+/* ── 상품 3단 ── */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tier{background:var(--ink);border:1px solid var(--line);padding:20px 14px;text-align:center;cursor:pointer;position:relative}
+.tier.on{border-color:var(--gold);background:rgba(201,169,97,.06)}
+.tier .tn{font-family:var(--serif);font-size:.95rem;letter-spacing:.08em}
+.tier .tp{font-size:1.1rem;font-weight:700;color:var(--gold-hi);margin:9px 0 7px}
+.tier .td{font-size:.68rem;color:var(--dim);line-height:1.7}
+.tier .best{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);
+  font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:3px 10px}
+.tierDetail{margin-top:16px;font-size:.78rem;color:var(--dim);line-height:1.9;background:var(--ink);
+  border:1px solid var(--line);padding:16px;border-radius:6px}
+.tierDetail b{color:var(--tx)}
+
+/* ── 결제 ── */
+#payCard{display:none}
+.orderBox{background:var(--ink);border:1px solid var(--line2);padding:20px;text-align:center;margin-bottom:6px}
+.orderBox .oid{font-size:.72rem;letter-spacing:.14em;color:var(--dim)}
+.orderBox .oidv{font-family:var(--serif);font-size:1.3rem;letter-spacing:.2em;color:var(--gold-hi);margin:8px 0 14px}
+.orderBox .amt{font-size:1.6rem;font-weight:700}
+.orderBox .amt small{font-size:.85rem;font-weight:400;color:var(--dim)}
+.paySteps{font-size:.8rem;color:var(--dim);line-height:2;margin:18px 0 4px}
+.paySteps b{color:var(--gold-hi)}
+#qrWrap{display:none;text-align:center;margin-top:16px}
+#qrWrap img,#qrWrap canvas{background:#fff;padding:10px;border-radius:8px}
+
+/* ── 토스트·관리자 ── */
+.toast{display:none;position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+  background:var(--gold);color:var(--ink);padding:12px 24px;border-radius:99px;
+  font-size:.85rem;font-weight:600;z-index:99;max-width:88vw;text-align:center}
+#admin{display:none}
+#admin table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:14px}
+#admin th,#admin td{border:1px solid var(--line);padding:8px 6px;text-align:left}
+#admin th{color:var(--gold);font-weight:400;letter-spacing:.06em}
+#admin td.click{cursor:pointer;color:var(--gold-hi)}
+#adminOut{white-space:pre-wrap;font-size:.8rem;line-height:1.9;margin-top:16px;color:var(--dim);
+  max-height:400px;overflow:auto;border:1px solid var(--line);padding:14px;display:none}
+footer{text-align:center;font-size:.72rem;color:var(--dim);line-height:2;padding:34px 0 10px;border-top:1px solid var(--line);margin-top:20px}
+footer .fm{font-family:var(--serif);letter-spacing:.28em;color:var(--gold);opacity:.7}
+@media(max-width:640px){
+  .pillars,.hidgrid{grid-template-columns:repeat(4,1fr)}
+  .pillars.no-time,.hidgrid.no-time{grid-template-columns:repeat(3,1fr)}
+  .pl .han{font-size:1.5rem}
+  .tiers{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="home" href="index.html">← 명문각</a>
+  <button id="copyLink">🔗 링크 복사</button>
+  <div class="gate" id="gateMark">
+    <h1>묻다</h1>
+    <div class="sub">明 問 閣</div>
+  </div>
+  <div class="svc"><b>命</b> · 사주를 묻다</div>
+  <p class="lead">절기 기준 만세력으로 원국을 세우고, 지지 속 지장간 세 층까지 남김없이 읽습니다.<br>
+  만세력 확인과 첫 물음은 <b style="color:var(--gold-hi)">무료</b>입니다.</p>
+</header>
+
+<!-- ═══ 1. 입력 ═══ -->
+<section class="card">
+  <h2>一 · 생을 여쭙니다</h2>
+  <label>성함</label>
+  <input type="text" id="name" placeholder="홍길동" autocomplete="name">
+  <div class="row2">
+    <div>
+      <label>성별</label>
+      <div class="seg" id="genderSeg">
+        <button data-v="여" class="on">여</button>
+        <button data-v="남">남</button>
+      </div>
+    </div>
+    <div>
+      <label>양력 / 음력</label>
+      <div class="seg" id="calSeg">
+        <button data-v="solar" class="on">양력</button>
+        <button data-v="lunar">음력</button>
+      </div>
+    </div>
+  </div>
+  <div class="chk" id="leapWrap" style="display:none">
+    <input type="checkbox" id="leap"><label for="leap" style="margin:0">윤달입니다</label>
+  </div>
+  <label>생년월일 (8자리)</label>
+  <input type="text" id="bdate" placeholder="19830524" inputmode="numeric" maxlength="8">
+  <div class="row2">
+    <div>
+      <label>태어난 시각</label>
+      <input type="time" id="btime">
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <div class="chk" style="margin-top:12px"><input type="checkbox" id="noTime"><label for="noTime" style="margin:0">시각을 모릅니다</label></div>
+    </div>
+  </div>
+  <label>자시(23:00~00:59) 출생 시 일주 기준</label>
+  <div class="seg" id="jasiSeg">
+    <button data-v="ya" class="on">야자시 — 당일 유지</button>
+    <button data-v="jeong">정자시 — 익일로</button>
+  </div>
+  <p class="note">한국 만세력 다수가 쓰는 야자시가 기본입니다. 23시 이전 출생이면 선택과 무관합니다.</p>
+  <div class="chk"><input type="checkbox" id="fix30" checked><label for="fix30" style="margin:0">한국 출생 — 진태양시 보정(−30분) 적용</label></div>
+
+  <label>간명서 받으실 이메일</label>
+  <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+
+  <label>특히 궁금한 영역 (선택)</label>
+  <div id="focusTags">
+    <button data-v="재물">재물</button><button data-v="직업">직업</button><button data-v="애정">애정</button>
+    <button data-v="건강">건강</button><button data-v="학업">학업</button><button data-v="이동">이동·이사</button>
+  </div>
+  <label>선생께 여쭙고 싶은 것 (선택 · 정밀 간명에서 답합니다)</label>
+  <textarea id="question" rows="3" placeholder="예) 지금 하는 일을 계속해도 될까요? 언제쯤 움직이는 게 좋을까요?"></textarea>
+
+  <button class="btn gold" id="calcBtn">만세력 세우기 — 무료</button>
+</section>
+
+<!-- ═══ 2. 명식 보드 ═══ -->
+<section class="card" id="board">
+  <h2>二 · 원국이 섰습니다</h2>
+  <div class="who" id="whoLine"></div>
+  <div class="pillars" id="pillarGrid"></div>
+
+  <div class="hidbox">
+    <h3>支藏干 · 지장간 세 층</h3>
+    <p class="cap">지지마다 하늘의 기운이 세 층으로 숨어 있습니다. 여기(餘氣)는 지난 달의 남은 기운, 중기(中氣)는 씨앗, 정기(正氣)는 그 지지의 본령입니다. 괄호 안은 한 달 서른 날 중 그 기운이 맡는 날수입니다.</p>
+    <div class="hidgrid" id="hidGrid"></div>
+  </div>
+
+  <div class="elbox">
+    <h3>五行 · 오행 세력</h3>
+    <p class="cap">천간은 온전히, 지지는 지장간의 날수 비례로 나누어 계산한 실제 세력입니다. 겉글자 개수만 세는 셈법보다 정밀합니다.</p>
+    <div id="elBars"></div>
+  </div>
+
+  <div class="dyBox">
+    <h3>大運 · 십년 물줄기</h3>
+    <div class="dyScroll" id="dyScroll"></div>
+  </div>
+
+  <div id="teaserBox">
+    <h3>선생의 첫 물음 — 무료</h3>
+    <div id="teaserTxt"></div>
+    <div id="teaserAfter">여기까지가 무료 간명입니다.<br>이 원국의 <b>속사정</b>은 아래 간명서에서 마저 풀어 드립니다.</div>
+  </div>
+  <button class="btn line" id="teaserBtn">선생의 첫 물음 받기 — 무료</button>
+</section>
+
+<!-- ═══ 3. 상품 선택 ═══ -->
+<section class="card" id="tierCard" style="display:none">
+  <h2>三 · 간명의 깊이를 고릅니다</h2>
+  <div class="tiers" id="tierWrap">
+    <div class="tier" data-t="lite">
+      <div class="tn">간단 간명</div>
+      <div class="tp">10,000원</div>
+      <div class="td">A4 4~6장<br>기질 · 올해 · 핵심 처방</div>
+    </div>
+    <div class="tier on" data-t="deep">
+      <span class="best">가장 많이 찾습니다</span>
+      <div class="tn">심층 간명</div>
+      <div class="tp">20,000원</div>
+      <div class="td">A4 10장 내외<br>재물·직업·애정·건강 + 대운</div>
+    </div>
+    <div class="tier" data-t="full">
+      <div class="tn">정밀 간명</div>
+      <div class="tp">30,000원</div>
+      <div class="td">A4 20장 내외<br>지장간 전수 해부 + 질문 답변</div>
+    </div>
+  </div>
+  <div class="tierDetail" id="tierDetail"></div>
+  <button class="btn gold" id="applyBtn">간명 신청 등록</button>
+</section>
+
+<!-- ═══ 4. 결제 ═══ -->
+<section class="card" id="payCard">
+  <h2>四 · 값을 치릅니다</h2>
+  <div class="orderBox">
+    <div class="oid">주문번호</div>
+    <div class="oidv" id="orderIdView">—</div>
+    <div class="amt" id="payAmount">—<small> 원</small></div>
+  </div>
+  <p class="paySteps">
+    ① 아래 버튼으로 카카오페이를 엽니다<br>
+    ② 위 금액을 <b>정확히</b> 입력해 보냅니다<br>
+    ③ 보내는 메시지에 <b>주문번호</b>를 적어 주세요 — 확인이 빨라집니다<br>
+    ④ 보내신 뒤 아래 <b>[보냈습니다]</b>를 눌러 주세요
+  </p>
+  <button class="btn gold" id="payBtn">카카오페이로 보내기</button>
+  <div id="qrWrap"><p class="note" style="margin-bottom:8px">PC이시면 휴대폰 카메라로 스캔하세요</p><div id="qrCode"></div></div>
+  <button class="btn line" id="paidBtn">보냈습니다 — 입금 확인 요청</button>
+  <p class="note" style="text-align:center;margin-top:14px">입금 확인 후 간명이 시작되며, 완성되면 이메일로 간명서(워드 문서)가 발송됩니다.<br>보통 확인 후 10~20분 안에 도착합니다.</p>
+</section>
+
+<!-- ═══ 관리자 ═══ -->
+<section class="card" id="admin">
+  <h2>看命室 · 간명실</h2>
+  <label>열람 키</label>
+  <input type="password" id="adminKey" placeholder="열람 키">
+  <div class="chk"><input type="checkbox" id="autoSend" checked><label for="autoSend" style="margin:0">완성 시 자동 발송</label></div>
+  <button class="btn line" id="adminLoad">신청 목록 불러오기</button>
+  <div id="adminList"></div>
+  <div id="adminOut"></div>
+</section>
+
+<footer>
+  <div class="fm">明問閣</div>
+  본 간명은 전통 명리학 이론에 근거한 참고 자료입니다.<br>
+  중요한 결정은 여러 조언과 함께 신중히 내리시기 바랍니다.
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════ 설정 ═══════════ */
+const SERVER_URL='https://script.google.com/macros/s/AKfycbyX_n2X3lwfXNEQFIISOsij7dqXgyI3UFGNcHrEpmDEFIiOmZ7-oxGBvGeCCtZP4Kt7BA/exec';
+const KAKAOPAY_URL='https://qr.kakaopay.com/281006011151732061004456';
+const SITE_URL='https://jsh0529-beep.github.io/mundang/saju.html';
+
+/* ═══════════ 명리 기초 데이터 (월하서재 검증 엔진) ═══════════ */
+const GAN_KO={'甲':'갑','乙':'을','丙':'병','丁':'정','戊':'무','己':'기','庚':'경','辛':'신','壬':'임','癸':'계'};
+const JI_KO={'子':'자','丑':'축','寅':'인','卯':'묘','辰':'진','巳':'사','午':'오','未':'미','申':'신','酉':'유','戌':'술','亥':'해'};
+const GAN_EL={'甲':'목','乙':'목','丙':'화','丁':'화','戊':'토','己':'토','庚':'금','辛':'금','壬':'수','癸':'수'};
+const GAN_YY={'甲':1,'乙':0,'丙':1,'丁':0,'戊':1,'己':0,'庚':1,'辛':0,'壬':1,'癸':0};
+const JI_EL={'子':'수','丑':'토','寅':'목','卯':'목','辰':'토','巳':'화','午':'화','未':'토','申':'금','酉':'금','戌':'토','亥':'수'};
+const JI_MAIN={'子':'癸','丑':'己','寅':'甲','卯':'乙','辰':'戊','巳':'丙','午':'丁','未':'己','申':'庚','酉':'辛','戌':'戊','亥':'壬'};
+/* 지장간 3층 [간, 날수] — 마지막이 정기 */
+const JI_HID3={
+ '子':[['壬',10],['癸',20]], '丑':[['癸',9],['辛',3],['己',18]],
+ '寅':[['戊',7],['丙',7],['甲',16]], '卯':[['甲',10],['乙',20]],
+ '辰':[['乙',9],['癸',3],['戊',18]], '巳':[['戊',7],['庚',7],['丙',16]],
+ '午':[['丙',10],['己',9],['丁',11]], '未':[['丁',9],['乙',3],['己',18]],
+ '申':[['戊',7],['壬',7],['庚',16]], '酉':[['庚',10],['辛',20]],
+ '戌':[['辛',9],['丁',3],['戊',18]], '亥':[['戊',7],['甲',7],['壬',16]]
+};
+/* 시두법 — 일간별 자시의 천간 (야자시 시주 보정용) */
+const SIDU={'甲':'甲','己':'甲','乙':'丙','庚':'丙','丙':'戊','辛':'戊','丁':'庚','壬':'庚','戊':'壬','癸':'壬'};
+const GEN={'목':'화','화':'토','토':'금','금':'수','수':'목'};
+const CTL={'목':'토','토':'수','수':'화','화':'금','금':'목'};
+const EL_VAR={'목':'--el목','화':'--el화','토':'--el토','금':'--el금','수':'--el수'};
+function ganzhiKo(gz){return GAN_KO[gz[0]]+JI_KO[gz[1]];}
+function sipseong(day,other){
+  const de=GAN_EL[day],oe=GAN_EL[other],same=GAN_YY[day]===GAN_YY[other];
+  if(de===oe)return same?'비견':'겁재';
+  if(GEN[de]===oe)return same?'식신':'상관';
+  if(CTL[de]===oe)return same?'편재':'정재';
+  if(CTL[oe]===de)return same?'편관':'정관';
+  if(GEN[oe]===de)return same?'편인':'정인';
+  return '';
+}
+
+/* ═══════════ UI 상태 ═══════════ */
+const $=id=>document.getElementById(id);
+let gender='여', calType='solar', jasi='ya', tier='deep';
+let focusSel=[], sajuData=null, orderId=null;
+const TIERS={
+  lite:{name:'간단 간명',price:10000,desc:'<b>2개 장 · A4 4~6장.</b> 원국 총평과 타고난 기질, 그리고 재물·직업·애정의 큰 결과 올해의 흐름을 한 번에 짚습니다. 처음 사주를 접하시는 분께 맞습니다.'},
+  deep:{name:'심층 간명',price:20000,desc:'<b>4개 장 · A4 10장 내외.</b> 기질 → 오행·직업·재물 → 애정·건강·대인 → 대운과 올해까지, 삶의 네 기둥을 각각 한 장씩 깊게 풉니다. 지장간 근거를 매 장마다 답니다.'},
+  full:{name:'정밀 간명',price:30000,desc:'<b>7개 장 · A4 20장 내외.</b> 심층의 전부에 더해, <b>지장간 세 층 전수 해부 전용 장</b>과 60년 대운 전체, 올해 월별 흐름, 그리고 여쭈신 질문에 대한 정면 답변까지. 명문각이 드릴 수 있는 가장 깊은 간명입니다.'}
+};
+function fmt(n){return n.toLocaleString('ko-KR');}
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2400);}
+function copyText(s,msg){
+  (navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).then(()=>toast(msg))
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast(msg);});
+}
+function segInit(id,cb){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(b.dataset.v);});}
+
+$('copyLink').onclick=()=>copyText(SITE_URL,'명문각 사주 링크가 복사되었습니다');
+segInit('genderSeg',v=>gender=v);
+segInit('calSeg',v=>{calType=v;$('leapWrap').style.display=v==='lunar'?'flex':'none';});
+segInit('jasiSeg',v=>jasi=v);
+$('noTime').onchange=e=>$('btime').disabled=e.target.checked;
+$('focusTags').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  b.classList.toggle('on');
+  focusSel=[...$('focusTags').querySelectorAll('.on')].map(x=>x.dataset.v);});
+function renderTierDetail(){$('tierDetail').innerHTML=TIERS[tier].desc;}
+document.querySelectorAll('#tierWrap .tier').forEach(el=>el.onclick=()=>{
+  document.querySelectorAll('#tierWrap .tier').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');tier=el.dataset.t;renderTierDetail();
+  if(sajuData){sajuData.tier=tier;sajuData.price=TIERS[tier].price;sajuData.product=TIERS[tier].name;}
+});
+renderTierDetail();
+
+/* 관리자: 현판 5회 클릭 */
+let gclicks=0,gtimer=null;
+$('gateMark').onclick=()=>{
+  gclicks++;clearTimeout(gtimer);gtimer=setTimeout(()=>gclicks=0,1800);
+  if(gclicks>=5){gclicks=0;const a=$('admin');a.style.display=a.style.display==='block'?'none':'block';
+    if(a.style.display==='block'){try{$('adminKey').value=localStorage.getItem('mg_adm')||'';}catch(e){}a.scrollIntoView({behavior:'smooth'});}}
+};
+if(location.hash==='#admin'){$('admin').style.display='block';try{$('adminKey').value=localStorage.getItem('mg_adm')||'';}catch(e){}}
+
+/* ═══════════ 만세력 계산 (검증 엔진 이식) ═══════════ */
+function computeChart(cfg){
+  const name=cfg.name.trim();
+  if(!name){toast('성함을 입력해 주세요');return null;}
+  const bd=cfg.bdRaw.replace(/\D/g,'');
+  if(bd.length!==8){toast('생년월일을 8자리로 입력해 주세요 (예: 19830524)');return null;}
+  const y=+bd.slice(0,4),m=+bd.slice(4,6),d=+bd.slice(6,8);
+  if(y<1900||y>2026||m<1||m>12||d<1||d>31){toast('생년월일을 다시 확인해 주세요');return null;}
+  const timeUnknown=cfg.timeUnknown;
+  let hh=12,mi=0;
+  if(!timeUnknown){
+    if(!cfg.timeStr){toast('태어난 시각을 입력하시거나 "시각을 모릅니다"에 표시해 주세요');return null;}
+    [hh,mi]=cfg.timeStr.split(':').map(Number);
+  }
+  let sy=y,sm=m,sd=d,lunarText='';
+  if(cfg.calType==='lunar'){
+    try{
+      const lm=cfg.leap?-m:m;
+      const sol=Lunar.fromYmd(y,lm,d).getSolar();
+      sy=sol.getYear();sm=sol.getMonth();sd=sol.getDay();
+      lunarText=`음력 ${y}년 ${cfg.leap?'윤':''}${m}월 ${d}일`;
+    }catch(e){toast('음력 날짜를 확인해 주세요');return null;}
+  }
+  const solY=sy,solM=sm,solD=sd;  /* 진태양시 보정 전의 양력 날짜(표기용) */
+  let corrected=false;
+  if($('fix30').checked&&!timeUnknown){
+    const dt=new Date(sy,sm-1,sd,hh,mi);dt.setMinutes(dt.getMinutes()-30);
+    sy=dt.getFullYear();sm=dt.getMonth()+1;sd=dt.getDate();hh=dt.getHours();mi=dt.getMinutes();
+    corrected=true;
+  }
+  const solar=Solar.fromYmdHms(sy,sm,sd,hh,mi,0);
+  const lunar=solar.getLunar();
+  const ec=lunar.getEightChar();ec.setSect(jasi==='jeong'?1:2);
+  if(!lunarText)lunarText=`음력 ${lunar.getYear()}년 ${lunar.getMonth()<0?'윤':''}${Math.abs(lunar.getMonth())}월 ${lunar.getDay()}일`;
+  const pRaw={year:ec.getYear(),month:ec.getMonth(),day:ec.getDay(),time:ec.getTime()};
+  const dayGan=pRaw.day[0];
+  /* 야자시(23시대) 출생: 일주는 당일 유지, 시주는 당일 일간 기준 자시로 교정(시두법).
+     lunar-javascript는 이때 익일 일간 기준 시간을 반환하므로 한국 관행에 맞게 덮어씀 */
+  if(!timeUnknown&&jasi==='ya'&&hh===23) pRaw.time=SIDU[dayGan]+'子';
+  const mk=gz=>({
+    ganzhi:gz,ko:ganzhiKo(gz),
+    gan:gz[0],ganKo:GAN_KO[gz[0]],ganEl:GAN_EL[gz[0]],
+    ji:gz[1],jiKo:JI_KO[gz[1]],jiEl:JI_EL[gz[1]],
+    hidden3:JI_HID3[gz[1]].map(h=>({gan:h[0],ko:GAN_KO[h[0]],el:GAN_EL[h[0]],days:h[1],ss:sipseong(dayGan,h[0])})),
+    ssGan:sipseong(dayGan,gz[0]),ssJi:sipseong(dayGan,JI_MAIN[gz[1]])
+  });
+  const pillars={year:mk(pRaw.year),month:mk(pRaw.month),day:mk(pRaw.day)};
+  pillars.day.ssGan='일간(나)';
+  if(!timeUnknown)pillars.time=mk(pRaw.time);
+  /* 오행 세력 — 천간 30점, 지지는 지장간 날수비례 30점 */
+  const power={'목':0,'화':0,'토':0,'금':0,'수':0};
+  const keys=timeUnknown?['year','month','day']:['year','month','day','time'];
+  keys.forEach(k=>{
+    const p=pillars[k];
+    power[p.ganEl]+=30;
+    const tot=p.hidden3.reduce((s,h)=>s+h.days,0);
+    p.hidden3.forEach(h=>power[h.el]+=30*h.days/tot);
+  });
+  const powSum=Object.values(power).reduce((a,b)=>a+b,0);
+  const powPct={};Object.keys(power).forEach(k=>powPct[k]=Math.round(power[k]/powSum*1000)/10);
+  /* 단순 개수(참고) */
+  const cnt={'목':0,'화':0,'토':0,'금':0,'수':0};
+  keys.forEach(k=>{cnt[pillars[k].ganEl]++;cnt[pillars[k].jiEl]++;});
+  const yun=ec.getYun(cfg.gender==='남'?1:0);
+  const daYunArr=yun.getDaYun().slice(1,9).map(du=>({
+    age:du.getStartAge(),year:du.getStartYear(),ganzhi:du.getGanZhi(),ko:ganzhiKo(du.getGanZhi())
+  }));
+  const nowGz=Solar.fromDate(new Date()).getLunar().getYearInGanZhiByLiChun();
+  return {
+    name,gender:cfg.gender,timeUnknown,corrected,lunarText,jasi:(jasi==='jeong'?'정자시(익일)':'야자시(당일)'),
+    birthInput:`${cfg.calType==='solar'?'양력':'음력'} ${y}년 ${m}월 ${d}일${timeUnknown?' (시간 모름)':' '+cfg.timeStr}`,
+    solarBirth:`양력 ${solY}년 ${solM}월 ${solD}일${timeUnknown?'':' '+String(cfg.timeStr)}`,
+    pillars,elements:cnt,elementPower:powPct,
+    dayMaster:{gan:dayGan,ko:GAN_KO[dayGan],el:GAN_EL[dayGan],yy:GAN_YY[dayGan]?'양':'음'},
+    daYun:daYunArr,thisYear:{year:new Date().getFullYear(),ganzhi:nowGz,ko:ganzhiKo(nowGz)}
+  };
+}
+
+/* ═══════════ 보드 렌더 ═══════════ */
+function renderBoard(c){
+  $('whoLine').innerHTML=`<b>${c.name}</b> (${c.gender}) · ${c.birthInput}${c.corrected?' · 진태양시 보정':''} · ${c.lunarText}<br>일간 <b class="el-${c.dayMaster.el}">${c.dayMaster.gan}</b> ${c.dayMaster.ko}(${c.dayMaster.yy}${c.dayMaster.el}) · 올해 ${c.thisYear.year}년 ${c.thisYear.ganzhi}(${c.thisYear.ko})년`;
+  const order=c.timeUnknown?['day','month','year']:['time','day','month','year'];
+  const labels={time:'時柱 시주',day:'日柱 일주',month:'月柱 월주',year:'年柱 연주'};
+  $('pillarGrid').className='pillars'+(c.timeUnknown?' no-time':'');
+  $('pillarGrid').innerHTML=order.map(k=>{const p=c.pillars[k];return `
+    <div class="pl">
+      <div class="lab">${labels[k]}</div>
+      <div class="ss">${p.ssGan}</div>
+      <div class="han el-${p.ganEl}">${p.gan}</div>
+      <div class="ko">${p.ganKo} · ${p.ganEl}</div>
+      <div class="han el-${p.jiEl}">${p.ji}</div>
+      <div class="ko">${p.jiKo} · ${p.jiEl}</div>
+      <div class="ss">${p.ssJi}</div>
+    </div>`;}).join('');
+  /* 지장간 3층 */
+  const tierName=n=>n===2?['여기','정기']:['여기','중기','정기'];
+  $('hidGrid').className='hidgrid'+(c.timeUnknown?' no-time':'');
+  $('hidGrid').innerHTML=order.map(k=>{const p=c.pillars[k];const tn=tierName(p.hidden3.length);
+    return `<div class="hcol">
+      <div class="ji el-${p.jiEl}">${p.ji} ${p.jiKo}</div>
+      ${p.hidden3.map((h,i)=>`
+        <div class="hrow${i===p.hidden3.length-1?' jeonggi':''}">
+          <span class="tier-l">${tn[i]}</span>
+          <span class="hg el-${h.el}">${h.gan}<span style="font-size:.62rem;color:var(--dim)"> ${h.ko}</span></span>
+          <span class="hd">${h.ss} · ${h.days}일</span>
+        </div>`).join('')}
+    </div>`;}).join('');
+  /* 오행 바 */
+  const maxP=Math.max(...Object.values(c.elementPower));
+  $('elBars').innerHTML=['목','화','토','금','수'].map(el=>`
+    <div class="elbar">
+      <span class="en el-${el}">${el}</span>
+      <div class="track"><div class="fill" style="width:0;background:var(${EL_VAR[el]})" data-w="${c.elementPower[el]/maxP*100}"></div></div>
+      <span class="pct">${c.elementPower[el]}%</span>
+    </div>`).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.querySelectorAll('.elbar .fill').forEach(f=>f.style.width=f.dataset.w+'%');
+  }));
+  /* 대운 */
+  const now=new Date().getFullYear();
+  $('dyScroll').innerHTML=c.daYun.map((du,i)=>{
+    const next=c.daYun[i+1];
+    const isNow=du.year<=now&&(!next||now<next.year);
+    return `<div class="dy${isNow?' now':''}">
+      <div class="age">${du.age}세</div>
+      <div class="gz">${du.ganzhi}</div>
+      <div class="yr">${du.year}년~</div>
+    </div>`;}).join('');
+}
+
+/* ═══════════ 흐름 ═══════════ */
+$('calcBtn').onclick=()=>{
+  const email=$('email').value.trim();
+  if(!email||!email.includes('@')){toast('간명서 받으실 이메일을 입력해 주세요');return;}
+  const c=computeChart({name:$('name').value,gender,calType,leap:$('leap').checked,
+    bdRaw:$('bdate').value,timeStr:$('btime').value,timeUnknown:$('noTime').checked});
+  if(!c)return;
+  sajuData=Object.assign({},c,{type:'personal',tier,product:TIERS[tier].name,price:TIERS[tier].price,
+    email,focus:focusSel,question:$('question').value.trim()});
+  orderId=null;
+  $('board').style.display='block';
+  $('tierCard').style.display='block';
+  $('payCard').style.display='none';
+  $('teaserBox').style.display='none';$('teaserAfter').style.display='none';
+  $('teaserBtn').style.display='block';$('teaserBtn').disabled=false;$('teaserBtn').textContent='선생의 첫 물음 받기 — 무료';
+  $('applyBtn').disabled=false;$('applyBtn').textContent='간명 신청 등록';
+  renderBoard(c);
+  $('board').scrollIntoView({behavior:'smooth'});
+};
+
+/* 무료 첫 물음 */
+$('teaserBtn').onclick=async()=>{
+  if(!sajuData)return;
+  if(!SERVER_URL){toast('saju.html 상단의 SERVER_URL을 먼저 설정하세요');return;}
+  const b=$('teaserBtn');b.disabled=true;b.textContent='선생이 원국을 살피고 있습니다…';
+  $('teaserBox').style.display='block';
+  $('teaserTxt').innerHTML='<span class="blink"></span>';
+  try{
+    const r=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'teaser',data:sajuData})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.msg||'생성 실패');
+    /* 타자 효과 */
+    const txt=j.text;let i=0;
+    const el=$('teaserTxt');el.textContent='';
+    const tick=()=>{
+      el.textContent=txt.slice(0,i);i+=2;
+      if(i<=txt.length+1)requestAnimationFrame(tick);
+      else{$('teaserAfter').style.display='block';b.style.display='none';
+        $('tierCard').scrollIntoView({behavior:'smooth',block:'nearest'});}
+    };
+    tick();
+  }catch(e){
+    $('teaserTxt').textContent='첫 물음을 여는 데 실패했습니다. 잠시 후 다시 시도해 주세요.';
+    b.disabled=false;b.textContent='선생의 첫 물음 받기 — 무료';
+  }
+};
+
+/* 신청 등록 → 결제 활성화 */
+$('applyBtn').onclick=async()=>{
+  if(!sajuData){toast('먼저 만세력을 세워 주세요');return;}
+  if(!SERVER_URL){toast('saju.html 상단의 SERVER_URL을 먼저 설정하세요');return;}
+  const b=$('applyBtn');b.disabled=true;b.textContent='등록 중…';
+  try{
+    const r=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'apply',service:'사주',data:sajuData})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.msg||'등록 실패');
+    orderId=j.id;
+    b.textContent='등록되었습니다 ✓';
+    $('payCard').style.display='block';
+    $('orderIdView').textContent=orderId;
+    $('payAmount').innerHTML=fmt(sajuData.price)+'<small> 원</small>';
+    $('payBtn').textContent='카카오페이로 '+fmt(sajuData.price)+'원 보내기';
+    $('payCard').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    toast('등록에 실패했습니다: '+e.message);
+    b.disabled=false;b.textContent='간명 신청 등록';
+  }
+};
+
+/* 카카오페이 */
+$('payBtn').onclick=()=>{
+  const isMobile=/Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(isMobile){location.href=KAKAOPAY_URL;}
+  else{
+    window.open(KAKAOPAY_URL,'_blank');
+    const w=$('qrWrap');w.style.display='block';
+    if(!w.dataset.done){
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      s.onload=()=>{new QRCode($('qrCode'),{text:KAKAOPAY_URL,width:160,height:160});};
+      document.body.appendChild(s);w.dataset.done='1';
+    }
+  }
+};
+
+/* 입금 완료 통지 */
+$('paidBtn').onclick=async()=>{
+  if(!orderId)return;
+  const b=$('paidBtn');b.disabled=true;
+  try{
+    await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'paid',id:orderId})});
+    b.textContent='확인 요청되었습니다 ✓ — 확인 후 간명이 시작됩니다';
+    toast('입금 확인을 요청했습니다. 간명서는 이메일로 발송됩니다.');
+  }catch(e){b.disabled=false;toast('요청에 실패했습니다. 다시 눌러 주세요.');}
+};
+
+/* ═══════════ 관리자 ═══════════ */
+$('adminLoad').onclick=async()=>{
+  const k=$('adminKey').value.trim();
+  if(!k){toast('열람 키를 입력하세요');return;}
+  try{localStorage.setItem('mg_adm',k);}catch(e){}
+  if(!SERVER_URL){toast('SERVER_URL을 먼저 설정하세요');return;}
+  try{
+    const r=await fetch(SERVER_URL+'?key='+encodeURIComponent(k));
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.msg||'열람 실패');
+    if(!j.list.length){$('adminList').innerHTML='<p class="note">신청 건이 없습니다.</p>';return;}
+    $('adminList').innerHTML='<table><tr><th>번호</th><th>서비스</th><th>상품</th><th>금액</th><th>이름</th><th>상태</th><th>집필</th><th>발송</th></tr>'+
+      j.list.map(it=>`<tr>
+        <td>${it.id}</td><td>${it.service}</td><td>${it.product}</td><td>${fmt(+it.price||0)}</td>
+        <td>${it.name}</td><td>${it.status}</td>
+        <td class="click" data-q="${it.id}">▶ 집필</td>
+        <td class="click" data-r="${it.id}">보기</td>
+      </tr>`).join('')+'</table>';
+    $('adminList').querySelectorAll('[data-q]').forEach(td=>td.onclick=async()=>{
+      if(!confirm(td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'))return;
+      const r2=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'queue',key:k,id:td.dataset.q,autoSend:$('autoSend').checked?'Y':'N'})});
+      const j2=await r2.json();
+      toast(j2.ok?'집필 대기열에 올렸습니다. 1분 내 시작됩니다.':'실패: '+(j2.msg||''));
+    });
+    $('adminList').querySelectorAll('[data-r]').forEach(td=>td.onclick=async()=>{
+      const r2=await fetch(SERVER_URL+'?key='+encodeURIComponent(k)+'&action=report&id='+td.dataset.r);
+      const j2=await r2.json();
+      const o=$('adminOut');o.style.display='block';
+      o.textContent=j2.ok?(j2.secs||[]).map((s,i)=>'── 제'+(i+1)+'장 ──\n'+s).join('\n\n')||'(아직 작성된 장이 없습니다)':'실패: '+(j2.msg||'');
+    });
+  }catch(e){toast('열람 실패: '+e.message);}
+};
+</script>
+</body>
+</html>

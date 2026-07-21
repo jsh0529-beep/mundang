@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>꿈을 묻다 — 명문각 明問閣</title>
+<meta name="description" content="어젯밤 꿈이 남긴 상징을 골라내어 지금의 물음과 잇습니다. 해몽 5,000원.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --ink:#0F0D0A; --panel:#161310; --gold:#C9A961; --gold-hi:#E4C77F;
+  --tx:#EFE8D9; --dim:#9C8F79; --line:rgba(201,169,97,.16); --line2:rgba(201,169,97,.3);
+  --serif:'Noto Serif KR',serif; --sans:'Pretendard',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--tx);font-family:var(--sans);
+  background-image:radial-gradient(ellipse 90% 45% at 50% -10%,rgba(201,169,97,.06),transparent)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px 90px}
+header{position:relative;text-align:center;padding:44px 0 8px}
+.home{position:absolute;left:0;top:20px;font-size:.78rem;color:var(--dim);
+  border:1px solid var(--line);padding:7px 14px;border-radius:99px}
+.home:hover{color:var(--gold);border-color:var(--line2)}
+.gate{display:inline-block;position:relative;padding:20px 34px 16px;border:1px solid var(--line)}
+.gate::before{content:'';position:absolute;left:-10px;right:-10px;top:-1px;height:4px;background:var(--gold)}
+.gate h1{font-family:var(--serif);font-weight:600;font-size:1.7rem;letter-spacing:.34em;text-indent:.34em}
+.gate .sub{font-family:var(--serif);font-weight:300;font-size:.72rem;letter-spacing:.5em;text-indent:.5em;color:var(--gold);margin-top:8px}
+.svc{margin:26px 0 6px;font-family:var(--serif);font-weight:300;font-size:1.5rem;letter-spacing:.12em}
+.svc b{font-weight:600;color:var(--gold-hi)}
+.lead{color:var(--dim);font-size:.86rem;line-height:1.9;margin-bottom:34px}
+.card{background:var(--panel);border:1px solid var(--line);padding:28px 26px;margin-bottom:22px}
+.card h2{font-family:var(--serif);font-weight:400;font-size:1.02rem;letter-spacing:.12em;color:var(--gold);
+  margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+label{display:block;font-size:.8rem;color:var(--dim);margin:18px 0 8px}
+label:first-of-type{margin-top:0}
+input,textarea{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--tx);
+  padding:13px 14px;font-size:.95rem;font-family:inherit;border-radius:6px;outline:none}
+input:focus,textarea:focus{border-color:var(--line2)}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:88px;background:var(--ink);border:1px solid var(--line);color:var(--dim);
+  padding:11px 8px;font-size:.83rem;font-family:inherit;border-radius:6px;cursor:pointer}
+.seg button.on{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,169,97,.07)}
+.note{font-size:.74rem;color:var(--dim);opacity:.8;margin-top:8px;line-height:1.7}
+.btn{width:100%;padding:16px;border:none;border-radius:6px;font-size:1rem;font-weight:600;
+  font-family:var(--sans);letter-spacing:.05em;cursor:pointer;margin-top:22px}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn.gold:hover{background:var(--gold-hi)}
+.btn.line{background:none;border:1px solid var(--line2);color:var(--gold)}
+.btn:disabled{opacity:.35;cursor:default}
+.orderBox{background:var(--ink);border:1px solid var(--line2);padding:20px;text-align:center;margin-bottom:6px}
+.orderBox .oid{font-size:.72rem;letter-spacing:.14em;color:var(--dim)}
+.orderBox .oidv{font-family:var(--serif);font-size:1.3rem;letter-spacing:.2em;color:var(--gold-hi);margin:8px 0 14px}
+.orderBox .amt{font-size:1.6rem;font-weight:700}
+.orderBox .amt small{font-size:.85rem;font-weight:400;color:var(--dim)}
+.paySteps{font-size:.8rem;color:var(--dim);line-height:2;margin:18px 0 4px}
+.paySteps b{color:var(--gold-hi)}
+#qrWrap{display:none;text-align:center;margin-top:16px}
+#qrWrap img,#qrWrap canvas{background:#fff;padding:10px;border-radius:8px}
+#payCard{display:none}
+.included{font-size:.8rem;color:var(--dim);line-height:2;border:1px dashed var(--line2);padding:16px;margin-top:6px}
+.included b{color:var(--tx)}
+.toast{display:none;position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+  background:var(--gold);color:var(--ink);padding:12px 24px;border-radius:99px;
+  font-size:.85rem;font-weight:600;z-index:99;max-width:88vw;text-align:center}
+footer{text-align:center;font-size:.72rem;color:var(--dim);line-height:2;padding:34px 0 10px;border-top:1px solid var(--line);margin-top:20px}
+footer .fm{font-family:var(--serif);letter-spacing:.28em;color:var(--gold);opacity:.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="home" href="index.html">← 명문각</a>
+  <div class="gate"><h1>묻다</h1><div class="sub">明 問 閣</div></div>
+  <div class="svc"><b>夢</b> · 꿈을 묻다</div>
+  <p class="lead">꿈은 답이 아니라 물음입니다.<br>꿈이 남긴 상징을 골라내어, 지금 당신의 물음과 잇습니다.</p>
+</header>
+
+<section class="card">
+  <h2>一 · 꿈을 여쭙니다</h2>
+  <label>꾸신 꿈을 기억나는 대로 적어 주세요</label>
+  <textarea id="dreamTxt" rows="7" placeholder="장면, 등장한 사람이나 동물, 색, 그때의 감정까지 — 사소해 보이는 것일수록 중요합니다."></textarea>
+  <label>언제 꾸신 꿈인가요</label>
+  <div class="seg" id="whenSeg">
+    <button data-v="오늘 새벽" class="on">오늘 새벽</button>
+    <button data-v="어제">어제</button>
+    <button data-v="며칠 안">며칠 안</button>
+    <button data-v="반복되는 꿈">반복되는 꿈</button>
+  </div>
+  <label>꿈에서 깬 뒤의 기분</label>
+  <div class="seg" id="moodSeg">
+    <button data-v="개운함">개운함</button>
+    <button data-v="불안함" class="on">불안함</button>
+    <button data-v="먹먹함">먹먹함</button>
+    <button data-v="설렘">설렘</button>
+    <button data-v="모르겠음">모르겠음</button>
+  </div>
+  <label>성함</label>
+  <input type="text" id="name" placeholder="홍길동" autocomplete="name">
+  <label>생년월일 (선택 · 8자리 — 적으시면 일간 기준으로 맞춰 풉니다)</label>
+  <input type="text" id="bdate" placeholder="19830524" inputmode="numeric" maxlength="8">
+  <label>해몽서 받으실 이메일</label>
+  <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+
+  <div class="included" style="margin-top:22px">
+    <b>해몽서에 담기는 것</b> — 핵심 풀이 · 상징 하나하나의 뜻 · 길흉의 결과 시기 · 지금 조심할 것과 붙잡을 것. 이메일로 정갈한 글월이 갑니다.
+  </div>
+  <button class="btn gold" id="applyBtn">해몽 신청 등록 — 5,000원</button>
+</section>
+
+<section class="card" id="payCard">
+  <h2>二 · 값을 치릅니다</h2>
+  <div class="orderBox">
+    <div class="oid">주문번호</div>
+    <div class="oidv" id="orderIdView">—</div>
+    <div class="amt">5,000<small> 원</small></div>
+  </div>
+  <p class="paySteps">
+    ① 아래 버튼으로 카카오페이를 엽니다<br>
+    ② <b>5,000원</b>을 입력해 보냅니다<br>
+    ③ 보내는 메시지에 <b>주문번호</b>를 적어 주세요<br>
+    ④ 보내신 뒤 아래 <b>[보냈습니다]</b>를 눌러 주세요
+  </p>
+  <button class="btn gold" id="payBtn">카카오페이로 5,000원 보내기</button>
+  <div id="qrWrap"><p class="note" style="margin-bottom:8px">PC이시면 휴대폰 카메라로 스캔하세요</p><div id="qrCode"></div></div>
+  <button class="btn line" id="paidBtn">보냈습니다 — 입금 확인 요청</button>
+  <p class="note" style="text-align:center;margin-top:14px">입금 확인 후 풀이가 시작되며, 완성되면 이메일로 해몽서가 발송됩니다.</p>
+</section>
+
+<footer>
+  <div class="fm">明問閣</div>
+  본 해몽은 전통 해몽 이론에 근거한 참고 자료입니다.
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SERVER_URL='https://script.google.com/macros/s/AKfycbyX_n2X3lwfXNEQFIISOsij7dqXgyI3UFGNcHrEpmDEFIiOmZ7-oxGBvGeCCtZP4Kt7BA/exec';
+const KAKAOPAY_URL='https://qr.kakaopay.com/281006011151732061004456';
+const $=id=>document.getElementById(id);
+let when='오늘 새벽', mood='불안함', orderId=null;
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2400);}
+function segInit(id,cb){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(b.dataset.v);});}
+segInit('whenSeg',v=>when=v);
+segInit('moodSeg',v=>mood=v);
+
+$('applyBtn').onclick=async()=>{
+  const dream=$('dreamTxt').value.trim();
+  if(dream.length<10){toast('꿈 내용을 조금 더 자세히 적어 주세요');return;}
+  const name=$('name').value.trim();
+  if(!name){toast('성함을 입력해 주세요');return;}
+  const email=$('email').value.trim();
+  if(!email||!email.includes('@')){toast('해몽서 받으실 이메일을 입력해 주세요');return;}
+  const bd=$('bdate').value.replace(/\D/g,'');
+  if(bd&&bd.length!==8){toast('생년월일은 8자리이거나 비워 주세요');return;}
+  if(!SERVER_URL){toast('dream.html 상단의 SERVER_URL을 먼저 설정하세요');return;}
+  const b=$('applyBtn');b.disabled=true;b.textContent='등록 중…';
+  try{
+    const r=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'apply',service:'해몽',
+      data:{type:'dream',product:'해몽',price:5000,name,email,dream,when,mood,birth:bd||''}})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.msg||'등록 실패');
+    orderId=j.id;
+    b.textContent='등록되었습니다 ✓';
+    $('payCard').style.display='block';
+    $('orderIdView').textContent=orderId;
+    $('payCard').scrollIntoView({behavior:'smooth'});
+  }catch(e){toast('등록 실패: '+e.message);b.disabled=false;b.textContent='해몽 신청 등록 — 5,000원';}
+};
+
+$('payBtn').onclick=()=>{
+  const isMobile=/Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(isMobile){location.href=KAKAOPAY_URL;}
+  else{
+    window.open(KAKAOPAY_URL,'_blank');
+    const w=$('qrWrap');w.style.display='block';
+    if(!w.dataset.done){
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      s.onload=()=>{new QRCode($('qrCode'),{text:KAKAOPAY_URL,width:160,height:160});};
+      document.body.appendChild(s);w.dataset.done='1';
+    }
+  }
+};
+
+$('paidBtn').onclick=async()=>{
+  if(!orderId)return;
+  const b=$('paidBtn');b.disabled=true;
+  try{
+    await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'paid',id:orderId})});
+    b.textContent='확인 요청되었습니다 ✓ — 확인 후 풀이가 시작됩니다';
+    toast('입금 확인을 요청했습니다. 해몽서는 이메일로 발송됩니다.');
+  }catch(e){b.disabled=false;toast('요청 실패. 다시 눌러 주세요.');}
+};
+</script>
+</body>
+</html>

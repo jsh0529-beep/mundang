@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>명문각 明問閣 — 묻다</title>
+<meta name="description" content="답을 주지 않습니다. 물음을 정리해 드립니다. 사주 · 작명 · 해몽, 명문각.">
+<meta property="og:title" content="명문각 明問閣 — 묻다">
+<meta property="og:description" content="답을 주지 않습니다. 물음을 정리해 드립니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --ink:#0F0D0A; --panel:#161310; --gold:#C9A961; --gold-hi:#E4C77F;
+  --tx:#EFE8D9; --dim:#9C8F79; --line:rgba(201,169,97,.16);
+  --serif:'Noto Serif KR',serif; --sans:'Pretendard',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--tx);font-family:var(--sans);min-height:100vh;
+  background-image:radial-gradient(ellipse 90% 55% at 50% -12%,rgba(201,169,97,.07),transparent)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+
+/* ── 상인방(문의 윗틀) 헤더 ── */
+header{padding:64px 0 0;text-align:center}
+.gate{display:inline-block;position:relative;padding:34px 54px 30px;border:1px solid var(--line)}
+.gate::before{content:'';position:absolute;left:-14px;right:-14px;top:-1px;height:5px;background:var(--gold)}
+.gate::after{content:'';position:absolute;left:-14px;right:-14px;top:8px;height:1px;background:var(--line)}
+.gate h1{font-family:var(--serif);font-weight:600;font-size:3.4rem;letter-spacing:.42em;text-indent:.42em;line-height:1}
+.gate .hanja{margin-top:14px;font-family:var(--serif);font-weight:300;font-size:.95rem;letter-spacing:.62em;text-indent:.62em;color:var(--gold)}
+.slogan{margin:34px auto 0;font-family:var(--serif);font-weight:300;font-size:1.06rem;line-height:2.1;color:var(--dim)}
+.slogan b{color:var(--tx);font-weight:400}
+
+/* ── 세 개의 문 ── */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:64px 0 26px}
+.door{position:relative;display:block;background:var(--panel);border:1px solid var(--line);
+  padding:44px 26px 30px;text-align:center;transition:border-color .3s,transform .3s,background .3s}
+.door::before{content:'';position:absolute;left:14px;right:14px;top:0;height:3px;background:var(--gold);opacity:.55;transition:opacity .3s}
+.door:hover{border-color:rgba(201,169,97,.5);transform:translateY(-4px);background:#1A1611}
+.door:hover::before{opacity:1}
+.door .cn{font-family:var(--serif);font-weight:300;font-size:2.9rem;color:var(--gold);line-height:1}
+.door h2{font-family:var(--serif);font-weight:400;font-size:1.22rem;margin:20px 0 12px;letter-spacing:.06em}
+.door p{font-size:.84rem;line-height:1.8;color:var(--dim);min-height:60px}
+.door .price{display:inline-block;margin-top:18px;font-size:.8rem;letter-spacing:.08em;color:var(--gold-hi);
+  border:1px solid var(--line);padding:7px 16px;border-radius:99px}
+.door .price em{font-style:normal;color:var(--dim)}
+.door.soon{opacity:.55;pointer-events:none}
+.door.soon .price{color:var(--dim)}
+.free-tag{position:absolute;top:16px;right:16px;font-size:.68rem;letter-spacing:.14em;color:var(--ink);
+  background:var(--gold);padding:4px 10px;font-weight:700}
+
+/* ── 셋의 원칙 ── */
+.creed{margin:58px 0 0;border-top:1px solid var(--line);padding-top:44px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.creed div{font-size:.84rem;line-height:1.9;color:var(--dim)}
+.creed b{display:block;font-family:var(--serif);font-weight:400;font-size:.98rem;color:var(--tx);margin-bottom:8px}
+footer{margin-top:70px;padding:30px 0 46px;border-top:1px solid var(--line);
+  text-align:center;font-size:.74rem;color:var(--dim);line-height:2}
+footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacity:.7}
+
+@media(max-width:720px){
+  .gate h1{font-size:2.3rem}
+  .doors,.creed{grid-template-columns:1fr}
+  .door p{min-height:0}
+  header{padding-top:46px}
+}
+@media(prefers-reduced-motion:reduce){.door{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="gate">
+    <h1>묻다</h1>
+    <div class="hanja">明 問 閣</div>
+  </div>
+  <p class="slogan">답을 주지 않습니다.<br><b>물음을 정리해 드립니다.</b></p>
+</header>
+
+<nav class="doors">
+  <a class="door" href="saju.html">
+    <span class="free-tag">무료 맛보기</span>
+    <div class="cn">命</div>
+    <h2>사주를 묻다</h2>
+    <p>절기 기준 만세력으로 원국을 세우고,<br>지지 속 지장간 세 층까지<br>남김없이 풀어 읽습니다.</p>
+    <span class="price">무료 · 1만 <em>/</em> 2만 <em>/</em> 3만</span>
+  </a>
+  <a class="door soon" href="name.html">
+    <div class="cn">名</div>
+    <h2>이름을 묻다</h2>
+    <p>대법원 인명용 한자만 씁니다.<br>수리·자원·발음·음양,<br>네 겹의 검증을 모두 통과한 이름.</p>
+    <span class="price">준비 중</span>
+  </a>
+  <a class="door" href="dream.html">
+    <div class="cn">夢</div>
+    <h2>꿈을 묻다</h2>
+    <p>어젯밤 꿈이 남긴 상징을 골라내어<br>지금의 물음과 잇습니다.<br>길흉보다 방향을 읽습니다.</p>
+    <span class="price">5,000원</span>
+  </a>
+</nav>
+
+<section class="creed">
+  <div><b>계산은 기계가</b>만세력·수리·오행 판별은 사람이 아니라 검증된 연산이 합니다. 간지 한 자도 짐작으로 적지 않습니다.</div>
+  <div><b>해석은 근거로</b>모든 풀이는 원국의 글자를 근거로 답니다. 근거 없는 위로도, 근거 없는 겁주기도 하지 않습니다.</div>
+  <div><b>결정은 당신이</b>간명은 지도이지 명령이 아닙니다. 길을 고르는 것은 언제나 묻는 사람의 몫입니다.</div>
+</section>
+
+<footer>
+  <div class="fm">明問閣</div>
+  본 서비스의 풀이는 전통 명리학 이론에 근거한 참고 자료입니다.<br>
+  중요한 결정은 여러 조언과 함께 신중히 내리시기 바랍니다.
+</footer>
+
+</div>
+</body>
+</html>
