@@ -397,6 +397,14 @@ const TIERS={
   deep:{name:'심층 간명',price:20000,desc:'<b>4개 장 · A4 10장 내외.</b> 기질 → 오행·직업·재물 → 애정·건강·대인 → 대운과 올해까지, 삶의 네 기둥을 각각 한 장씩 깊게 풉니다. 지장간 근거를 매 장마다 답니다.'},
   full:{name:'정밀 간명',price:30000,desc:'<b>7개 장 · A4 20장 내외.</b> 심층의 전부에 더해, <b>지장간 세 층 전수 해부 전용 장</b>과 60년 대운 전체, 올해 월별 흐름, 그리고 여쭈신 질문에 대한 정면 답변까지. 명문각이 드릴 수 있는 가장 깊은 간명입니다.'}
 };
+function queueLabel(st){
+  st=String(st||'');
+  if(st.indexOf('작성중')===0) return '↻ 이어쓰기';
+  if(st.indexOf('오류')===0) return '↻ 재집필';
+  if(st.indexOf('작성완료')===0) return '↻ 재발송';
+  if(st==='발송완료') return '↻ 재집필';
+  return '▶ 집필';
+}
 function fmt(n){return n.toLocaleString('ko-KR');}
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2400);}
 function copyText(s,msg){
@@ -672,14 +680,21 @@ $('adminLoad').onclick=async()=>{
       j.list.map(it=>`<tr>
         <td>${it.id}</td><td>${it.service}</td><td>${it.product}</td><td>${fmt(+it.price||0)}</td>
         <td>${it.name}</td><td>${it.status}</td>
-        <td class="click" data-q="${it.id}">▶ 집필</td>
+        <td class="click" data-q="${it.id}" data-st="${it.status}">${queueLabel(it.status)}</td>
         <td class="click" data-r="${it.id}">보기</td>
       </tr>`).join('')+'</table>';
     $('adminList').querySelectorAll('[data-q]').forEach(td=>td.onclick=async()=>{
-      if(!confirm(td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'))return;
+      const st=td.dataset.st||'', lab=queueLabel(st);
+      const msg = lab==='▶ 집필'
+        ? td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'
+        : (lab==='↻ 재발송'
+            ? td.dataset.q+' 번 — 이미 작성된 원고로 문서를 다시 만들어 발송할까요? (AI 재호출 없음)'
+            : td.dataset.q+' 번 — 남은 장부터 이어서 집필할까요? (이미 쓴 장은 그대로 둡니다)');
+      if(!confirm(msg))return;
       const r2=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'queue',key:k,id:td.dataset.q,autoSend:$('autoSend').checked?'Y':'N'})});
       const j2=await r2.json();
       toast(j2.ok?'집필 대기열에 올렸습니다. 1분 내 시작됩니다.':'실패: '+(j2.msg||''));
+      if(j2.ok){ td.dataset.st='작성중 0'; td.textContent='↻ 이어쓰기'; }
     });
     $('adminList').querySelectorAll('[data-r]').forEach(td=>td.onclick=async()=>{
       const r2=await fetch(SERVER_URL+'?key='+encodeURIComponent(k)+'&action=report&id='+td.dataset.r);

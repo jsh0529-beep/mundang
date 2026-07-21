@@ -169,6 +169,14 @@ footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacit
 <script>
 const SERVER_URL='https://script.google.com/macros/s/AKfycbyX_n2X3lwfXNEQFIISOsij7dqXgyI3UFGNcHrEpmDEFIiOmZ7-oxGBvGeCCtZP4Kt7BA/exec';
 const $=id=>document.getElementById(id);
+function queueLabel(st){
+  st=String(st||'');
+  if(st.indexOf('작성중')===0) return '↻ 이어쓰기';
+  if(st.indexOf('오류')===0) return '↻ 재집필';
+  if(st.indexOf('작성완료')===0) return '↻ 재발송';
+  if(st==='발송완료') return '↻ 재집필';
+  return '▶ 집필';
+}
 function fmt(n){return (+n||0).toLocaleString('ko-KR');}
 const SITE_URL='https://jsh0529-beep.github.io/mundang/';
 function copyText(s,msg){
@@ -211,18 +219,25 @@ $('adminLoad').onclick=async()=>{
         j.list.map(it=>`<tr>
           <td>${it.id}</td><td>${it.service}</td><td>${it.product}</td><td>${fmt(it.price)}</td>
           <td>${it.name}</td><td>${it.status}</td>
-          <td class="click" data-q="${it.id}">▶ 집필</td>
+          <td class="click" data-q="${it.id}" data-st="${it.status}">${queueLabel(it.status)}</td>
           <td class="click" data-r="${it.id}">보기</td>
         </tr>`).join('')+'</table>';
       $('adminList').querySelectorAll('[data-q]').forEach(td=>td.onclick=async()=>{
-        if(!confirm(td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'))return;
+        const st=td.dataset.st||'', lab=queueLabel(st);
+        const msg = lab==='▶ 집필'
+          ? td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'
+          : (lab==='↻ 재발송'
+              ? td.dataset.q+' 번 — 이미 작성된 원고로 문서를 다시 만들어 발송할까요? (AI 재호출 없음)'
+              : td.dataset.q+' 번 — 남은 장부터 이어서 집필할까요? (이미 쓴 장은 그대로 둡니다)');
+        if(!confirm(msg))return;
         td.textContent='요청 중…';
         try{
           const r2=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'queue',key:k,id:td.dataset.q,autoSend:$('autoSend').checked?'Y':'N'})});
           const j2=await r2.json();
           toast(j2.ok?'집필 대기열에 올렸습니다. 1분 내 시작됩니다.':'실패: '+(j2.msg||''));
         }catch(e){toast('요청 실패');}
-        td.textContent='▶ 집필';
+        td.dataset.st='작성중 0';
+        td.textContent='↻ 이어쓰기';
       });
       $('adminList').querySelectorAll('[data-r]').forEach(td=>td.onclick=async()=>{
         const o=$('adminOut');o.style.display='block';o.textContent='불러오는 중…';
