@@ -70,6 +70,29 @@ footer{margin-top:70px;padding:30px 0 46px;border-top:1px solid var(--line);
   text-align:center;font-size:.74rem;color:var(--dim);line-height:2}
 footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacity:.7}
 
+/* ── 간명실(관리자) ── */
+#admin{display:none;background:var(--panel);border:1px solid var(--line);padding:28px 26px;margin-top:40px}
+#admin h2{font-family:var(--serif);font-weight:400;font-size:1.02rem;letter-spacing:.12em;color:var(--gold);
+  margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+#admin label{display:block;font-size:.8rem;color:var(--dim);margin-bottom:8px}
+#admin input[type=password]{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--tx);
+  padding:13px 14px;font-size:.95rem;font-family:inherit;border-radius:6px;outline:none}
+#admin input:focus{border-color:rgba(201,169,97,.4)}
+.achk{display:flex;align-items:center;gap:9px;font-size:.83rem;color:var(--dim);margin-top:14px;cursor:pointer}
+.achk input{accent-color:var(--gold)}
+.abtn{width:100%;padding:15px;border-radius:6px;font-size:.95rem;font-family:var(--sans);font-weight:600;
+  cursor:pointer;margin-top:18px;background:none;border:1px solid rgba(201,169,97,.3);color:var(--gold)}
+.abtn:hover{border-color:var(--gold)}
+#admin table{width:100%;border-collapse:collapse;font-size:.76rem;margin-top:16px}
+#admin th,#admin td{border:1px solid var(--line);padding:8px 6px;text-align:left}
+#admin th{color:var(--gold);font-weight:400;letter-spacing:.05em}
+#admin td.click{cursor:pointer;color:var(--gold-hi);white-space:nowrap}
+#adminList{overflow-x:auto}
+#adminOut{display:none;white-space:pre-wrap;font-size:.8rem;line-height:1.9;margin-top:16px;color:var(--dim);
+  max-height:420px;overflow:auto;border:1px solid var(--line);padding:14px}
+.toast{display:none;position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+  background:var(--gold);color:var(--ink);padding:12px 24px;border-radius:99px;
+  font-size:.85rem;font-weight:600;z-index:99;max-width:88vw;text-align:center}
 @media(max-width:720px){
   .gate h1{font-size:2.3rem}
   .doors,.creed{grid-template-columns:1fr}
@@ -83,7 +106,7 @@ footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacit
 <div class="wrap">
 
 <header>
-  <div class="gate">
+  <div class="gate" id="gateMark">
     <h1>묻다</h1>
     <div class="hanja">明 問 閣</div>
   </div>
@@ -118,6 +141,16 @@ footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacit
   <div><b>결정은 당신이</b>간명은 지도이지 명령이 아닙니다. 길을 고르는 것은 언제나 묻는 사람의 몫입니다.</div>
 </section>
 
+<section id="admin">
+  <h2>看命室 · 간명실</h2>
+  <label>열람 키</label>
+  <input type="password" id="adminKey" placeholder="열람 키">
+  <label class="achk"><input type="checkbox" id="autoSend" checked> 완성 시 자동 발송</label>
+  <button class="abtn" id="adminLoad">신청 목록 불러오기</button>
+  <div id="adminList"></div>
+  <div id="adminOut"></div>
+</section>
+
 <footer>
   <div class="fm">明問閣</div>
   본 서비스의 풀이는 전통 명리학 이론에 근거한 참고 자료입니다.<br>
@@ -125,5 +158,71 @@ footer .fm{font-family:var(--serif);letter-spacing:.3em;color:var(--gold);opacit
 </footer>
 
 </div>
+
+<div class="toast" id="toast"></div>
+<script>
+const SERVER_URL='https://script.google.com/macros/s/AKfycbyX_n2X3lwfXNEQFIISOsij7dqXgyI3UFGNcHrEpmDEFIiOmZ7-oxGBvGeCCtZP4Kt7BA/exec';
+const $=id=>document.getElementById(id);
+function fmt(n){return (+n||0).toLocaleString('ko-KR');}
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2400);}
+
+/* 현판 5회 클릭으로 간명실 열기 */
+let gclicks=0,gtimer=null;
+$('gateMark').onclick=()=>{
+  gclicks++;clearTimeout(gtimer);gtimer=setTimeout(()=>gclicks=0,1800);
+  if(gclicks>=5){gclicks=0;openAdmin();}
+};
+if(location.hash==='#admin')openAdmin();
+function openAdmin(){
+  const a=$('admin');
+  a.style.display=a.style.display==='block'?'none':'block';
+  if(a.style.display==='block'){
+    try{$('adminKey').value=localStorage.getItem('mg_adm')||'';}catch(e){}
+    a.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+$('adminLoad').onclick=async()=>{
+  const k=$('adminKey').value.trim();
+  if(!k){toast('열람 키를 입력하세요');return;}
+  try{localStorage.setItem('mg_adm',k);}catch(e){}
+  const b=$('adminLoad');b.disabled=true;b.textContent='불러오는 중…';
+  try{
+    const r=await fetch(SERVER_URL+'?key='+encodeURIComponent(k));
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.msg||'열람 실패');
+    if(!j.list.length){$('adminList').innerHTML='<p style="font-size:.8rem;color:var(--dim);margin-top:14px">신청 건이 없습니다.</p>';}
+    else{
+      $('adminList').innerHTML='<table><tr><th>번호</th><th>서비스</th><th>상품</th><th>금액</th><th>이름</th><th>상태</th><th>집필</th><th>원고</th></tr>'+
+        j.list.map(it=>`<tr>
+          <td>${it.id}</td><td>${it.service}</td><td>${it.product}</td><td>${fmt(it.price)}</td>
+          <td>${it.name}</td><td>${it.status}</td>
+          <td class="click" data-q="${it.id}">▶ 집필</td>
+          <td class="click" data-r="${it.id}">보기</td>
+        </tr>`).join('')+'</table>';
+      $('adminList').querySelectorAll('[data-q]').forEach(td=>td.onclick=async()=>{
+        if(!confirm(td.dataset.q+' 번 — 입금 확인되었고 집필을 시작할까요?'))return;
+        td.textContent='요청 중…';
+        try{
+          const r2=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'queue',key:k,id:td.dataset.q,autoSend:$('autoSend').checked?'Y':'N'})});
+          const j2=await r2.json();
+          toast(j2.ok?'집필 대기열에 올렸습니다. 1분 내 시작됩니다.':'실패: '+(j2.msg||''));
+        }catch(e){toast('요청 실패');}
+        td.textContent='▶ 집필';
+      });
+      $('adminList').querySelectorAll('[data-r]').forEach(td=>td.onclick=async()=>{
+        const o=$('adminOut');o.style.display='block';o.textContent='불러오는 중…';
+        try{
+          const r2=await fetch(SERVER_URL+'?key='+encodeURIComponent(k)+'&action=report&id='+td.dataset.r);
+          const j2=await r2.json();
+          o.textContent=j2.ok?((j2.secs||[]).map((s,i)=>'── 제'+(i+1)+'장 ──\n'+s).join('\n\n')||'(아직 작성된 장이 없습니다)'):'실패: '+(j2.msg||'');
+        }catch(e){o.textContent='불러오기 실패';}
+        o.scrollIntoView({behavior:'smooth',block:'nearest'});
+      });
+    }
+  }catch(e){toast('열람 실패: '+e.message);}
+  b.disabled=false;b.textContent='신청 목록 불러오기';
+};
+</script>
 </body>
 </html>
