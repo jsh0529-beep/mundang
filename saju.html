@@ -583,23 +583,60 @@ $('calcBtn').onclick=()=>{
   $('tierCard').style.display='block';
   $('payCard').style.display='none';
   $('teaserBox').style.display='none';$('teaserAfter').style.display='none';
-  $('teaserBtn').style.display='block';$('teaserBtn').disabled=false;$('teaserBtn').textContent='선생의 첫 물음 받기 — 무료';
+  $('teaserBtn').style.display='block';
+  const left=teaserLeft();
+  $('teaserBtn').disabled=left<=0;
+  $('teaserBtn').textContent=left<=0?'오늘의 무료 간명을 모두 받으셨습니다':('선생의 첫 물음 받기 — 무료'+(left<TEASER_MAX?' (오늘 '+left+'번 남음)':''));
   $('applyBtn').disabled=false;$('applyBtn').textContent='간명 신청 등록';
   renderBoard(c);
   $('board').scrollIntoView({behavior:'smooth'});
 };
 
+/* 브라우저 지문 — 서버 남용 방지용 (개인정보 아님) */
+function browserFp(){
+  try{
+    let f=localStorage.getItem('mg_fp');
+    if(!f){f=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-6);localStorage.setItem('mg_fp',f);}
+    return f;
+  }catch(e){return 'nofp';}
+}
+const TEASER_MAX=3;
+function teaserLeft(){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const raw=localStorage.getItem('mg_tsr');
+    const o=raw?JSON.parse(raw):{};
+    if(o.d!==today)return TEASER_MAX;
+    return Math.max(0,TEASER_MAX-(o.n||0));
+  }catch(e){return TEASER_MAX;}
+}
+function teaserUse(){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const raw=localStorage.getItem('mg_tsr');
+    const o=raw&&JSON.parse(raw).d===today?JSON.parse(raw):{d:today,n:0};
+    o.n=(o.n||0)+1;localStorage.setItem('mg_tsr',JSON.stringify(o));
+  }catch(e){}
+}
+
 /* 무료 첫 물음 */
 $('teaserBtn').onclick=async()=>{
   if(!sajuData)return;
   if(!SERVER_URL){toast('saju.html 상단의 SERVER_URL을 먼저 설정하세요');return;}
+  if(teaserLeft()<=0){
+    toast('무료 첫 물음은 하루 '+TEASER_MAX+'번까지 받으실 수 있습니다');
+    $('teaserBtn').disabled=true;
+    $('teaserBtn').textContent='오늘의 무료 간명을 모두 받으셨습니다';
+    return;
+  }
   const b=$('teaserBtn');b.disabled=true;b.textContent='선생이 원국을 살피고 있습니다…';
   $('teaserBox').style.display='block';
   $('teaserTxt').innerHTML='<span class="blink"></span>';
   try{
-    const r=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'teaser',data:sajuData})});
+    const r=await fetch(SERVER_URL,{method:'POST',body:JSON.stringify({action:'teaser',fp:browserFp(),data:sajuData})});
     const j=await r.json();
     if(!j.ok)throw new Error(j.msg||'생성 실패');
+    teaserUse();
     /* 타자 효과 */
     const txt=j.text;let i=0;
     const el=$('teaserTxt');el.textContent='';
@@ -611,7 +648,7 @@ $('teaserBtn').onclick=async()=>{
     };
     tick();
   }catch(e){
-    $('teaserTxt').textContent='첫 물음을 여는 데 실패했습니다. 잠시 후 다시 시도해 주세요.';
+    $('teaserTxt').textContent=(e&&e.message)?e.message:'첫 물음을 여는 데 실패했습니다. 잠시 후 다시 시도해 주세요.';
     b.disabled=false;b.textContent='선생의 첫 물음 받기 — 무료';
   }
 };
